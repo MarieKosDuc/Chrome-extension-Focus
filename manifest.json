@@ -1,0 +1,27 @@
+{
+    "name": "Focus time",
+    "description": "An extension to help me avoid procrastination",
+    "version":"1.0",
+    "manifest_version": 3,
+    "content_scripts": [
+        {
+          "matches": [
+            "<all_urls>"
+          ],
+          "js": ["content.js"],
+          "run_at": "document_end"
+        }
+      ],
+    "host_permissions": ["<all_urls>"],
+    "permissions": [
+      "storage"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action":{
+        "default_title": "Focus time",
+        "default_icons": "images/brain.png",
+        "default_popup": "popup.html"
+        }
+    }
