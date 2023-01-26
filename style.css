@@ -1,0 +1,11 @@
+.overlay{
+    opacity:0.8;
+    background-color:rgb(16, 195, 235);
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0px;
+    left:0px;
+    z-index:1000;
+    display:block;
+}

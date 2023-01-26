@@ -1,62 +1,316 @@
 console.log("content.js online!");
 
-chrome.runtime.onMessage.addListener((msgObj) => {
-  console.log(msgObj);
-  if (msgObj == "Focus time: on") {
-    focusTime();
-  } else if (msgObj == "Focus time: off") {
-    unFocus();
+// Contacting the service worker to know if the extension is on
+(async () => {
+  const response = await chrome.runtime.sendMessage({ greetings: "U on?" });
+  console.log("message sent to background");
+
+  //if response OK, do something
+  console.log(response);
+  focusTime();
+})();
+
+// Setting a variable that will allow to reload the pages only once when the extension is turned on/off
+let reload = false;
+
+// Creating the CSS blocking the page view
+const generateSTYLES = () => {
+  return `<style>@import url(https://fonts.googleapis.com/css?family=opensans:500);
+  body {
+    background: #33cc99;
+    color: #fff;
+    font-family: "Open Sans", sans-serif;
+    max-height: 700px;
+    overflow: hidden;
   }
-});
+  .c {
+    text-align: center;
+    display: block;
+    position: relative;
+    width: 80%;
+    margin: 100px auto;
+  }
+  ._404 {
+    font-size: 220px;
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+    height: 250px;
+    letter-spacing: 15px;
+  }
+  ._1 {
+    text-align: center;
+    display: block;
+    position: relative;
+    letter-spacing: 12px;
+    font-size: 4em;
+    line-height: 80%;
+  }
+  ._2 {
+    text-align: center;
+    display: block;
+    position: relative;
+    font-size: 20px;
+  }
+  .text {
+    font-size: 70px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    margin: 19px 0px 0px 0px;
+    /* top: 256.301px; */
+    z-index: 3;
+    width: 100%;
+    line-height: 1.2em;
+    display: inline-block;
+  }
+  
+ 
+  .right {
+    float: right;
+    width: 60%;
+  }
+  
+  hr {
+    padding: 0;
+    border: none;
+    border-top: 5px solid #fff;
+    color: #fff;
+    text-align: center;
+    margin: 0px auto;
+    width: 420px;
+    height: 10px;
+    z-index: -10;
+  }
+  
+  hr:after {
+    display: inline-block;
+    position: relative;
+    top: -0.75em;
+    font-size: 2em;
+    padding: 0 0.2em;
+    background: #33cc99;
+  }
+  
+  .cloud {
+    width: 350px;
+    height: 120px;
+  
+    background: #fff;
+    background: linear-gradient(top, #fff 100%);
+    background: -webkit-linear-gradient(top, #fff 100%);
+    background: -moz-linear-gradient(top, #fff 100%);
+    background: -ms-linear-gradient(top, #fff 100%);
+    background: -o-linear-gradient(top, #fff 100%);
+  
+    border-radius: 100px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+  
+    position: absolute;
+    margin: 120px auto 20px;
+    z-index: -1;
+    transition: ease 1s;
+  }
+  
+  .cloud:after,
+  .cloud:before {
+    content: "";
+    position: absolute;
+    background: #fff;
+    z-index: -1;
+  }
+  
+  .cloud:after {
+    width: 100px;
+    height: 100px;
+    top: -50px;
+    left: 50px;
+  
+    border-radius: 100px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+  }
+  
+  .cloud:before {
+    width: 180px;
+    height: 180px;
+    top: -90px;
+    right: 50px;
+  
+    border-radius: 200px;
+    -webkit-border-radius: 200px;
+    -moz-border-radius: 200px;
+  }
+  
+  .x1 {
+    top: -50px;
+    left: 100px;
+    -webkit-transform: scale(0.3);
+    -moz-transform: scale(0.3);
+    transform: scale(0.3);
+    opacity: 0.9;
+    -webkit-animation: moveclouds 15s linear infinite;
+    -moz-animation: moveclouds 15s linear infinite;
+    -o-animation: moveclouds 15s linear infinite;
+  }
+  
+  .x1_5 {
+    top: -80px;
+    left: 250px;
+    -webkit-transform: scale(0.3);
+    -moz-transform: scale(0.3);
+    transform: scale(0.3);
+    -webkit-animation: moveclouds 17s linear infinite;
+    -moz-animation: moveclouds 17s linear infinite;
+    -o-animation: moveclouds 17s linear infinite;
+  }
+  
+  .x2 {
+    left: 250px;
+    top: 30px;
+    -webkit-transform: scale(0.6);
+    -moz-transform: scale(0.6);
+    transform: scale(0.6);
+    opacity: 0.6;
+    -webkit-animation: moveclouds 25s linear infinite;
+    -moz-animation: moveclouds 25s linear infinite;
+    -o-animation: moveclouds 25s linear infinite;
+  }
+  
+  .x3 {
+    left: 250px;
+    bottom: -70px;
+  
+    -webkit-transform: scale(0.6);
+    -moz-transform: scale(0.6);
+    transform: scale(0.6);
+    opacity: 0.8;
+  
+    -webkit-animation: moveclouds 25s linear infinite;
+    -moz-animation: moveclouds 25s linear infinite;
+    -o-animation: moveclouds 25s linear infinite;
+  }
+  
+  .x4 {
+    left: 470px;
+    botttom: 20px;
+  
+    -webkit-transform: scale(0.75);
+    -moz-transform: scale(0.75);
+    transform: scale(0.75);
+    opacity: 0.75;
+  
+    -webkit-animation: moveclouds 18s linear infinite;
+    -moz-animation: moveclouds 18s linear infinite;
+    -o-animation: moveclouds 18s linear infinite;
+  }
+  
+  .x5 {
+    left: 200px;
+    top: 300px;
+  
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    transform: scale(0.5);
+    opacity: 0.8;
+  
+    -webkit-animation: moveclouds 20s linear infinite;
+    -moz-animation: moveclouds 20s linear infinite;
+    -o-animation: moveclouds 20s linear infinite;
+  }
+  
+  @-webkit-keyframes moveclouds {
+    0% {
+      margin-left: 1000px;
+    }
+    100% {
+      margin-left: -1000px;
+    }
+  }
+  @-moz-keyframes moveclouds {
+    0% {
+      margin-left: 1000px;
+    }
+    100% {
+      margin-left: -1000px;
+    }
+  }
+  @-o-keyframes moveclouds {
+    0% {
+      margin-left: 1000px;
+    }
+    100% {
+      margin-left: -1000px;
+    }
+  }
+   </style>`;
+};
 
-// ----------- TO SEE LATER ----------------
+const generateHTML = (pageName) => {
+  return `
+   
+   <div id="clouds">
+      <div class="cloud x1"></div>
+      <div class="cloud x1_5"></div>
+      <div class="cloud x2"></div>
+      <div class="cloud x3"></div>
+      <div class="cloud x4"></div>
+      <div class="cloud x5"></div>
+  </div>
+  <div class='c'>
+      <div class='_404'>404</div>
+      <hr>
+      <div class='_1'>GET BACK TO WORK</div>
+      <div class='_2'>STUDYING > ${pageName}</div>
+  </div>
+   `;
+};
 
+// Blocking time-consuming pages
 function focusTime() {
-  // lauching focus music page on YouTube : sending a message to the background
-
-  (async () => {
-    const response = await chrome.runtime.sendMessage({
-      greeting: "open Youtube",
-    });
-    // do something with response here, not outside the function
-    console.log(response);
-  })();
-
-  //blocking time-consuming pages
   switch (window.location.hostname) {
-    case "www.facebook.com":
-      alert("Back to work!!");
-      break;
     case "discord.com":
-      alert("Back to work!!");
-      break;
+    case "www.facebook.com":
     case "outlook.live.com":
-      alert("Back to work!!");
-      break;
     case "mail.google.com":
-      alert("Back to work!!");
-      break;
     case "web.whatsapp.com":
-      alert("Back to work!!");
-      break;
     case "mail.google.com":
-      alert("Back to work!!");
-      break;
     case "lemonde.fr":
-      alert("Back to work!!");
+      document.head.innerHTML = generateSTYLES();
+      document.body.innerHTML = generateHTML("BROWSING");
+      document.addEventListener("click", () => {
+          ;
+      });
       break;
   }
 }
 
-function unFocus() {
-  alert("You can now browse at will!");
+// function refreshOnce() {
+//   if (reload === false) {
+//     {
+//       switch (window.location.hostname) {
+//         case "discord.com":
+//         case "www.facebook.com":
+//         case "outlook.live.com":
+//         case "mail.google.com":
+//         case "web.whatsapp.com":
+//         case "mail.google.com":
+//         case "lemonde.fr":
+//           setTimeout(() => {
+//             document.location.reload();
+//           }, 6000);
+//           break;
+//       }
+//     }
+//   }
+// }
 
-  // telling the service worker to kill tye Youtube tab (still to come)
-  (async () => {
-    const response = await chrome.runtime.sendMessage({
-      greeting: "kill Youtube",
-    });
-    // do something with response here, not outside the function
-    console.log(response);
-  })();
-}
+// TO SEE LATER : function to reload all tabs, applying or suppressing the CSS :
+// function reloadAllWindows() {
+//   chrome.windows.getAll({}, (windows) => {
+//     for (const i in windows) {
+//       reloadWindow(windows[i])
+//     }
+//   })
+// }
