@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // checking the extension status
-  chrome.storage.local.get(["key"]).then((result) => {
+  chrome.storage.session.get(["key"]).then((result) => {
     if (result.key == "extensionOn") {
       extOnline = true;
     } else if (result.key == "extensionOff") {
@@ -64,3 +64,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   return true;
 });
+

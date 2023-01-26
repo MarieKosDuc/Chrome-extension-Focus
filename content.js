@@ -10,6 +10,9 @@ console.log("content.js online!");
   focusTime();
 })();
 
+// Setting a variable that will allow to reload the pages only once when the extension is turned on/off
+let reload = false;
+
 // Creating the CSS blocking the page view
 const generateSTYLES = () => {
   return `<style>@import url(https://fonts.googleapis.com/css?family=opensans:500);
@@ -276,9 +279,32 @@ function focusTime() {
     case "lemonde.fr":
       document.head.innerHTML = generateSTYLES();
       document.body.innerHTML = generateHTML("BROWSING");
+      document.addEventListener("click", () => {
+          ;
+      });
       break;
   }
 }
+
+// function refreshOnce() {
+//   if (reload === false) {
+//     {
+//       switch (window.location.hostname) {
+//         case "discord.com":
+//         case "www.facebook.com":
+//         case "outlook.live.com":
+//         case "mail.google.com":
+//         case "web.whatsapp.com":
+//         case "mail.google.com":
+//         case "lemonde.fr":
+//           setTimeout(() => {
+//             document.location.reload();
+//           }, 6000);
+//           break;
+//       }
+//     }
+//   }
+// }
 
 // TO SEE LATER : function to reload all tabs, applying or suppressing the CSS :
 // function reloadAllWindows() {

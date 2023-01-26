@@ -7,7 +7,7 @@ let offButton = document.getElementById("focusOff");
 offButton.disabled = true;
 
 // If the extension is already fired, only the OFF button can be clicked
-chrome.storage.local.get(["key"]).then((result) => {
+chrome.storage.session.get(["key"]).then((result) => {
   if (result.key == "extensionOn") {
     onButton.disabled = true;
     offButton.disabled = false;
@@ -36,7 +36,7 @@ function switchButtons() {
     })();
 
     // saving the popup state
-    chrome.storage.local.set({ key: "extensionOn" }).then(() => {
+    chrome.storage.session.set({ key: "extensionOn" }).then(() => {
       console.log("Value is set to extension on");
     });
 
@@ -53,7 +53,7 @@ function switchButtons() {
     })();
 
     // saving the popup state
-    chrome.storage.local.set({ key: "extensionOff" }).then(() => {
+    chrome.storage.session.set({ key: "extensionOff" }).then(() => {
       console.log("Value is set to extension off");
     });
   }
