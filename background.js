@@ -12,7 +12,6 @@ let extOnline = false;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // console.log("Message received: ", message);
-  // 2. A page requested user data, respond with a copy of `user`
   if (message.status === "on") {
     console.log("Opening Youtube");
     var newURL =
